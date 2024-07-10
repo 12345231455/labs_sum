@@ -187,8 +187,8 @@ void backpack()
 
 	int n;
 	cin >> n;
-	vector<int> weight(n + 1);
-	vector<int> cost(n + 1);
+	vector<int> weight(n);
+	vector<int> cost(n);
 	for (int i = 0; i < n; i++)
 	{
 		cin >> weight[i];
@@ -196,7 +196,7 @@ void backpack()
 	}
 	int s;
 	cin >> s;
-	vector<vector<int>> Dp_backpack(n + 1, vector<int>(n + 1));
+	vector<vector<int>> Dp_backpack(n + 1, vector<int>(s + 1));
 
 	// база
 
