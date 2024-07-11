@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <set>
 #include <algorithm>
 #include <vector>
@@ -222,14 +222,14 @@ void Hash()
 	// сборка Хэш-Таблицы
 
 	double start_hash = clock();
-	vector<vector<int>> Hash_Table(6250, vector<int>());
+	vector<set<int>> Hash_Table(6250, set<int>());
 	int p = rand_F_val();
 	for (int i = 0; i < n; i++)
 	{
 		int hash_value = F(a[i], p);
 		if (hash_value >= 0 && hash_value < Hash_Table.size()) 
 		{
-			Hash_Table[hash_value].push_back(a[i]);
+			Hash_Table[hash_value].insert(a[i]);
 		}
 	}
 
@@ -241,7 +241,7 @@ void Hash()
 		{
 			for (int j = 0; j < Hash_Table[key].size(); j++)
 			{
-				if (b[i] == Hash_Table[key][j])
+				if (Hash_Table[key].find(b[i]) != Hash_Table[key].end())
 				{
 					flag = true;
 					break; 
@@ -262,14 +262,15 @@ void Hash()
 
 int main()
 {
-	Lin();
-	cout << fixed << count_lin << ' ';
+	setlocale(LC_ALL, "ru");
+	//Lin();
+	cout << "Время работы Лин поиска: " << fixed << count_lin << '\n';
 	Bin();
-	cout << fixed << count_bin << ' ';
+	cout << "Время работы Бин поиска: " << fixed << count_bin << '\n';
 	Set();
-	cout << fixed << count_set << ' ';
+	cout << "Время работы поиска через set: " << fixed << count_set << '\n';
 	Freq_Dict();
-	cout << fixed << count_freq_dict << ' ';
+	cout << "Время работы поиска через частотный словарь: " << fixed << count_freq_dict << '\n';
 	Hash();
-	cout << fixed << count_freq_dict << ' ';
+	cout << "Время работы поиска через Хеш-таблицу: " << fixed << count_freq_dict << '\n';
 }
