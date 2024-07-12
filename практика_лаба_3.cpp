@@ -274,3 +274,96 @@ int main()
 	Hash();
 	cout << "Время работы поиска через Хеш-таблицу: " << fixed << count_freq_dict << '\n';
 }
+
+
+/*int rand_F_val()
+{
+        srand(time(0));
+        int q = (rand() * rand()) % 1000;
+        return q;
+}
+
+int F(int val, int p, int q)
+{
+        int key = (val * p) % q;
+        return key;
+}
+
+void check(int q, int n, vector<set<int>>& Hash_Table(q, set<int> ()))
+{
+	for(int i = 0; i<q;i++)
+	{
+		if(Hash_Table[i].size() > log(n))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void Hash()
+{
+
+        // инициализация и чтение данных
+
+        ifstream in_hash("input.txt");
+        ofstream out_hash("output_hash.txt");
+        int n, q;
+        in_hash >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++)
+        {
+                in_hash >> a[i];
+        }
+        in_hash >> q;
+        vector<int> b(q);
+        for (int i = 0; i < q; i++)
+        {
+                in_hash >> b[i];
+        }
+
+        // сборка Хэш-Таблицы
+
+        double start_hash = clock();
+        bool check_flag = false;
+        while(!check_flag)
+        {
+        	int p = rand_F_val();
+    	    int q = rand_F_val();
+ 	       vector<set<int>> Hash_Table(q, set<int>());
+    	    for (int i = 0; i < n; i++)
+	        {
+           	     int hash_value = F(a[i], p, q);
+        	        if (hash_value >= 0 && hash_value < Hash_Table.size()) 
+          	      {
+                        	Hash_Table[hash_value].insert(a[i]);
+            	    }
+   	     }
+			check_flag = check(q, n, Hash_Table);
+        }
+ 	       for (int i = 0; i < q; i++)
+	        {
+                	bool flag = false;
+              	  int key = F(b[i], p);
+            	    if (key >= 0 && key < Hash_Table.size()) 
+           	     {
+                        	for (int j = 0; j < Hash_Table[key].size(); j++)
+                      	  {
+                                	if (Hash_Table[key].find(b[i]) != Hash_Table[key].end())
+                             	   {
+                                        	flag = true;
+                                      	  break; 
+                          	      }
+                    	    }
+           	     }
+         	       if (flag)
+         	       {
+                        	out_hash << "YES\n";
+          	      }
+       	         else
+       	         {
+                       	 out_hash << "NO\n";
+           	     }
+ 	       }
+	        count_hash = (clock() - start_hash) / (CLOCKS_PER_SEC * 1.0);
+}*/
