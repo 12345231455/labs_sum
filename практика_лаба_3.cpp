@@ -194,7 +194,7 @@ int rand_F_val()
 
 int F(int val, int p)
 {
-	int key = (val * p) % 6250;
+	int key = (val * p) % 625000;
 	return key;
 }
 
