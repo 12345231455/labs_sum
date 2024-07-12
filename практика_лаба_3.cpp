@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 
@@ -42,11 +43,13 @@ void Lin()
 	clock_t start = clock();
 	for (int i = 0; i < q; i++)
 	{
-		for (int j = 0; j < n; j++)
+		bool flag = false;
+		for (int j = 0; j < n && !flag; j++)
 		{
 			if (b[i] == a[j])
 			{
 				out_lin << "YES\n";
+				flag = true;
 			}
 			else
 			{
@@ -122,7 +125,7 @@ void Set()
 	{
 		in_set >> b[i];
 	}
-	
+
 	// решение 
 
 	double start_set = clock();
@@ -144,7 +147,7 @@ void Set()
 
 void Freq_Dict()
 {
-	
+
 	//инициализация и чтение данных 
 
 	ifstream in_freq("input.txt");
@@ -166,7 +169,7 @@ void Freq_Dict()
 	}
 
 	//решение
-	
+
 	double start_freq = clock();
 	for (int i = 0; i < q; i++)
 	{
@@ -194,8 +197,25 @@ int rand_F_val()
 
 int F(int val, int p)
 {
-	int key = (val * p) % 625000;
+	int key = (val * p) % 625007;
 	return key;
+}
+
+bool check(vector<vector<int>> &Hash_Table, int bad_count)
+{
+	for (int i = 0; i < 625007; i++)
+	{
+		int count = 0;
+		for (int j = 0; j < Hash_Table[i].size(); j++)
+		{
+			if (Hash_Table[i][j])
+			{
+				count++;
+			}
+			if (count > bad_count) return false;
+		}
+	}
+	return true;
 }
 
 void Hash()
@@ -203,6 +223,7 @@ void Hash()
 
 	// инициализация и чтение данных
 
+	const int bad_count = 6;
 	ifstream in_hash("input.txt");
 	ofstream out_hash("output_hash.txt");
 	int n, q;
@@ -219,32 +240,44 @@ void Hash()
 		in_hash >> b[i];
 	}
 
-	// сборка Хэш-Таблицы
+	// сборка Хэш-Таблицы с решением
 
 	double start_hash = clock();
-	vector<set<int>> Hash_Table(6250, set<int>());
-	int p = rand_F_val();
-	for (int i = 0; i < n; i++)
+	int p = 0;
+	bool flag_check = false;
+	vector<vector<int>> Hash_Table(625007, vector<int>(0));
+	while (!flag_check)
 	{
-		int hash_value = F(a[i], p);
-		if (hash_value >= 0 && hash_value < Hash_Table.size()) 
+		p = rand_F_val();
+		Hash_Table.resize(625007, vector<int>(0));
+		for (int i = 0; i < n; i++)
 		{
-			Hash_Table[hash_value].insert(a[i]);
+			int hash_value = F(a[i], p);
+			if (hash_value >= 0 && hash_value < Hash_Table.size())
+			{
+				Hash_Table[hash_value].push_back(a[i]);
+			}
+		}
+		flag_check = check(Hash_Table, bad_count);
+		if (!flag_check)
+		{
+			Hash_Table.clear();
 		}
 	}
-
 	for (int i = 0; i < q; i++)
 	{
 		bool flag = false;
 		int key = F(b[i], p);
-		if (key >= 0 && key < Hash_Table.size()) 
+		if (key >= 0 && key < Hash_Table.size())
 		{
 			for (int j = 0; j < Hash_Table[key].size(); j++)
 			{
-				if (Hash_Table[key].find(b[i]) != Hash_Table[key].end())
+				for (int k = 0; k < Hash_Table[j].size() && !flag; k++)
 				{
-					flag = true;
-					break; 
+					if (Hash_Table[j][k] == b[i])
+					{
+						flag = true;
+					}
 				}
 			}
 		}
@@ -264,106 +297,13 @@ int main()
 {
 	setlocale(LC_ALL, "ru");
 	//Lin();
-	cout << "Время работы Лин поиска: " << fixed << count_lin << '\n';
+	cout << "Время работы Лин поиска: " << fixed << setprecision(10) << count_lin << '\n';
 	Bin();
-	cout << "Время работы Бин поиска: " << fixed << count_bin << '\n';
+	cout << "Время работы Бин поиска: " << fixed << setprecision(10) << count_bin << '\n';
 	Set();
-	cout << "Время работы поиска через set: " << fixed << count_set << '\n';
+	cout << "Время работы поиска через set: " << fixed << setprecision(10) << count_set << '\n';
 	Freq_Dict();
-	cout << "Время работы поиска через частотный словарь: " << fixed << count_freq_dict << '\n';
+	cout << "Время работы поиска через частотный словарь: " << fixed << setprecision(10) << count_freq_dict << '\n';
 	Hash();
-	cout << "Время работы поиска через Хеш-таблицу: " << fixed << count_freq_dict << '\n';
+	cout << "Время работы поиска через Хеш-таблицу: " << fixed << setprecision(10) << count_freq_dict << '\n';
 }
-
-
-/*int rand_F_val()
-{
-        srand(time(0));
-        int q = (rand() * rand()) % 1000;
-        return q;
-}
-
-int F(int val, int p, int q)
-{
-        int key = (val * p) % q;
-        return key;
-}
-
-void check(int q, int n, vector<set<int>>& Hash_Table(q, set<int> ()))
-{
-	for(int i = 0; i<q;i++)
-	{
-		if(Hash_Table[i].size() > log(n))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-void Hash()
-{
-
-        // инициализация и чтение данных
-
-        ifstream in_hash("input.txt");
-        ofstream out_hash("output_hash.txt");
-        int n, q;
-        in_hash >> n;
-        vector<int> a(n);
-        for (int i = 0; i < n; i++)
-        {
-                in_hash >> a[i];
-        }
-        in_hash >> q;
-        vector<int> b(q);
-        for (int i = 0; i < q; i++)
-        {
-                in_hash >> b[i];
-        }
-
-        // сборка Хэш-Таблицы
-
-        double start_hash = clock();
-        bool check_flag = false;
-        while(!check_flag)
-        {
-        	int p = rand_F_val();
-    	    int q = rand_F_val();
- 	       vector<set<int>> Hash_Table(q, set<int>());
-    	    for (int i = 0; i < n; i++)
-	        {
-           	     int hash_value = F(a[i], p, q);
-        	        if (hash_value >= 0 && hash_value < Hash_Table.size()) 
-          	      {
-                        	Hash_Table[hash_value].insert(a[i]);
-            	    }
-   	     }
-			check_flag = check(q, n, Hash_Table);
-        }
- 	       for (int i = 0; i < q; i++)
-	        {
-                	bool flag = false;
-              	  int key = F(b[i], p);
-            	    if (key >= 0 && key < Hash_Table.size()) 
-           	     {
-                        	for (int j = 0; j < Hash_Table[key].size(); j++)
-                      	  {
-                                	if (Hash_Table[key].find(b[i]) != Hash_Table[key].end())
-                             	   {
-                                        	flag = true;
-                                      	  break; 
-                          	      }
-                    	    }
-           	     }
-         	       if (flag)
-         	       {
-                        	out_hash << "YES\n";
-          	      }
-       	         else
-       	         {
-                       	 out_hash << "NO\n";
-           	     }
- 	       }
-	        count_hash = (clock() - start_hash) / (CLOCKS_PER_SEC * 1.0);
-}*/
