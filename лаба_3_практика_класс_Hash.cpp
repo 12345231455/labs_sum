@@ -13,8 +13,8 @@ private:
     int F(const string& s)
     {
         int hash = 0;
-        int p = 31;
-        int m = 983;
+        int p = 457;
+        int m = 7237;
         int p_pow = 1;
 
         for (char c : s)
