@@ -93,7 +93,7 @@ void BFS_short()
 	}
 	else
 	{
-		cout << Len[finish] << endl;
+		cout << Len[finish] << '\n';
 		vector<int> path;
 		for (int i = finish; i != start; i = Put[i]) {
 			path.push_back(i);
