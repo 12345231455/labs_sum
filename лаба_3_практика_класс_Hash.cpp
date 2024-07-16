@@ -1,6 +1,8 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -8,35 +10,75 @@ class Hash
 {
 private:
     string str;
-    vector<vector<int>> hashes;
+    vector<vector<string>> hashes;
+    int bad_count = 7;
+    bool flag = false;
+    int p = 26;
+    int q = 1;
 
-    int F(const string& s)
+    int rand_val()
     {
-        int hash = 0;
-        int p = 457;
-        int m = 7237;
-        int p_pow = 1;
+        srand(time(0));
+        int p = rand() * rand() % 100000;
+        return p;
+    }
+
+    bool check(vector<vector<string>>& Hash_Table, int bad_count)
+    {
+        for (int i = 0; i < q; i++)
+        {
+            if (Hash_Table[i].size() > bad_count) return false;
+        }
+        return true;
+    }
+
+    long long F(const string& s)
+    {
+
+        long long hash = 0;
 
         for (char c : s)
         {
-            hash = ((c - 'a' + 1) * p) % m;
+            hash = (hash * p + (c - 'a' + 1)) % q;
         }
 
         return hash;
+    }
+
+    bool check_(vector<vector<string>>& hashes, string s)
+    {
+        for (int i = 0; i < hashes.size(); i++)
+        {
+            for (int j = 0; j < hashes[i].size(); j++)
+            {
+                if (hashes[i][j] == s) return false;
+            }
+        }
+        return true;
     }
 
 public:
 
     Hash(const string& inputStr) : str(inputStr)
     {
-        hashes.resize(str.size());
-        for (int i = 0; i < str.size(); i++)
+        str = inputStr;
+        while (!flag)
         {
-            string substr = "";
-            for (int j = i; j < str.size(); j++)
+            q = rand_val();
+            hashes.resize(q, vector<string>(0));
+            for (int i = 0; i < str.size(); i++)
             {
-                substr += str[j];
-                hashes[i].push_back(F(substr));
+                string substr = "";
+                for (int j = i; j < str.size(); j++)
+                {
+                    substr += str[j];
+                    if(check_(hashes, substr)) hashes[F(substr)].push_back(substr);
+                }
+            }
+            flag = check(hashes, bad_count);
+            if (!flag)
+            {
+                hashes.clear();
             }
         }
     }
@@ -48,44 +90,28 @@ public:
 
     void add_Element(const string& new_Elem)
     {
-        string substr = "";
-        for (int i = 0; i < new_Elem.size(); i++)
-        {
-            substr += new_Elem[i];
-            hashes[new_Elem.size() - 1].push_back(F(substr));
-        }
+        if (check_(hashes, new_Elem)) hashes[F(new_Elem)].push_back(new_Elem);
+        else return;
     }
 
     void remove_Element(const string& elem_Remove)
     {
-        string substr = "";
-        for (int i = 0; i < elem_Remove.size(); i++)
+        for (int i = 0; i < hashes[F(elem_Remove)].size(); i++)
         {
-            substr += elem_Remove[i];
-            int hash = F(substr);
-            auto& vec = hashes[elem_Remove.size() - 1];
-            for (int k = 0; k < vec.size();)
+            if (hashes[F(elem_Remove)][i] == elem_Remove)
             {
-                if (vec[k] == hash)
-                {
-                    vec.erase(vec.begin() + k);
-                }
-                else
-                {
-                    k++;
-                }
+                hashes[F(elem_Remove)].erase(hashes[F(elem_Remove)].begin() + i);
             }
         }
     }
 
     bool find_Substring(const string& substring)
     {
-        int hash = F(substring);
         for (size_t i = 0; i < hashes.size(); i++)
         {
             for (size_t j = 0; j < hashes[i].size(); j++)
             {
-                if (hashes[i][j] == hash)
+                if (hashes[i][j] == substring)
                 {
                     return true;
                 }
@@ -107,9 +133,10 @@ public:
 
 int main()
 {
-    Hash hash("abcd");
-    hash.add_Element("abс");
-    hash.remove_Element("a");
-    cout << hash.find_Substring("ab") << '\n';
+    Hash hash("abcsavjfurthrgthbfghyjjhkljt");
+    //hash.add_Element("abc");
+    //hash.remove_Element("a");
+    if (hash.find_Substring("a")) cout << "YES" << '\n';
+    else cout << "NO\n";
     cout << hash.count_Substrings() << '\n';
 }
