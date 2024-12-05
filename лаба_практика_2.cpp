@@ -171,7 +171,7 @@ void NVP_stud()
         int ind = 0;
         for (int i = 0; i <= n; i++)
         {
-                if (Dp_len[i] >= mx && Dp_len[i] != 1e9)
+                if (Dp_len[i] > mx && Dp_len[i] != 1e9)
                 {
                         mx = Dp_len[i];
                         ind = i;
